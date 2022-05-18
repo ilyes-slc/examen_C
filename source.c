@@ -1,94 +1,84 @@
 #include "header.h"
 
-Routeur init_routeur()
-{
-Routeur R;
-R.port1.suivant = NULL;
-R.port2.tete = NULL;
-R.port2.queu = NULL;
-R.port3.suivant = NULL;
-R.port4.ABG = NULL;
-R.port4.ABD = NULL;
-return R;
-}
 
-void saisir(Paquet *pqt)
+
+void saisirProcessus(processus *p);
 {
-    scanf("%s",pqt->destination);
-    scanf("%s",pqt->source);
-    scanf("%d",pqt->id);
+    strcpy(p->etat,"pret");
+    scanf("%d",&p->priorite);
+    scanf("%d",&p->pid);
 }
 
 Routeur empiler(Routeur RT,Paquet pqt)
 {
 
-Cellule *element;
+    Cellule *element;
     element=malloc(sizeof(*Cellule));
     element->pqt=pqt;
     element->suivant=RT.port1;
     RT.port1 = element;
-return RT;
+    return RT;
 
 }
 
 
 void depiler(Routeur *RT)
 {
-RT->port1= RT->port1.suivant;
+    RT->port1= RT->port1.suivant;
 }
 
 
-Routeur enfiler(Routeur RT , Paquet pqt)
+Routeur enfiler(Routeur RT, Paquet pqt)
 {
     FileElment *element;
-element=malloc(sizeof(FileElment));
+    element=malloc(sizeof(FileElment));
 
-element->suivant=NULL;
-element->pqt=pqt;
+    element->suivant=NULL;
+    element->pqt=pqt;
 
-if (RT.port2.queu==NULL & RT.port2.tete==NULL)
-{
-RT.port2.queu=element;
-RT.port2.tete=element;
-return RT;
-}
-
-
-RT.port2.queu->suivant=element;
-RT.port2.queu=element;
+    if (RT.port2.queu==NULL & RT.port2.tete==NULL)
+    {
+        RT.port2.queu=element;
+        RT.port2.tete=element;
+        return RT;
+    }
 
 
+    RT.port2.queu->suivant=element;
+    RT.port2.queu=element;
 
-return RT;
+
+
+    return RT;
 }
 
 
 void defiler(Routeur *RT)
 {
     if (RT->port2.tete==NULL)
-{
-RT->port2.tete=NULL;
-RT->port2.queu=NULL;
+    {
+        RT->port2.tete=NULL;
+        RT->port2.queu=NULL;
+
+    }
+
+    RT->port2.tete=RT->port2.tete->next;
+
 
 }
 
-RT->port2.tete=RT->port2.tete->next;
 
-
-}
-
-
-Cellule* chercher(Routeur RT , char *adresse)
+Cellule* chercherProcessus(LC L, int pid)
 {
-    if(RT.port3.suivant==NULL)
+    if(L.suivant==NULL)
     {
         printf("Liste vide.\n");
         //exit(1);
     }
     else
     {
-        Liste nouv=RT.port3.suivant;
-        while(nouv!=NULL && (strcmp ( nouv->pqt.destination , adresse)!=0) )
+        LC nouv=L.suivant;
+        while(nouv!=NULL && (nouv->pr.pid!=pid) )
         {
             nouv=nouv->suivant;
 
@@ -100,7 +90,7 @@ Cellule* chercher(Routeur RT , char *adresse)
 
 void afficher_paquet(Routeur RT, char * destination)
 {
-        if(RT.port3.suivant==NULL)
+    if(RT.port3.suivant==NULL)
     {
         printf("Liste vide.\n");
         //exit(1);
@@ -108,9 +98,10 @@ void afficher_paquet(Routeur RT, char * destination)
     else
     {
         Liste nouv=RT.port3.suivant;
-        while(nouv!=NULL && (strcmp ( nouv->pqt.destination , adresse)!=0) )
+        while(nouv!=NULL && (strcmp ( nouv->pqt.destination, adresse)!=0) )
         {
-            if (strcmp ( nouv->pqt.destination , adresse)==0){
+            if (strcmp ( nouv->pqt.destination, adresse)==0)
+            {
                 printf("%s",nouv->pqt.destination);
                 printf("%s",nouv->pqt.source);
                 printf("%d",nouv->pqt.id);
@@ -119,4 +110,57 @@ void afficher_paquet(Routeur RT, char * destination)
 
         }
     }
+}
+
+LC ajouterProcessus(LC l,processus p)
+{
+    Cellule *element;
+    element=malloc(sizeof(*Cellule));
+    element->pr=p;
+    element->suivant=NULL;
+    if(l==NULL)
+        return element;
+    Cellule *tmp;
+    tmp=l;
+    while(tmp->suivant!=NULL)
+    {
+        tmp=tmp->suivant;
+    }
+    tmp->suivant=element;
+    return l;
+}
+
+
+void sauvegarderProcessus(processus p, char nomfichier[])
+{
+    int n,i;
+    FILE *f;
+    f=fopen(nomfichier,"w");
+    if(f!=NULL)
+    {
+
+            fprintf(f,"%d %d %s \n",p.pid,p.priorite,p.etat);
+
+    }
+    else
+    {
+        printf("Erreur le Ficher N\'est Pas NuLL");
+    }
+    fclose(f);
+}
+
+
+void Supprimer_debut (File *f)
+{
+if (f->tete==NULL)
+{
+f->tete=NULL;
+f->queu=NULL;
+
+}
+
+f->tete=f->tete->suivant;
+
+
+
 }

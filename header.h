@@ -1,68 +1,43 @@
 #ifndef HEADER_H_INCLUDED
 #define HEADER_H_INCLUDED
 
-typedef struct paquet{
-    char source[20];
-    char destination[20];
-    int id;
-}Paquet;
+typedef struct processus{
+    char etat[20];
+    int priorite;
+    int pid;
+}processus;
 
-typedef struct Cellule* Liste;
-typedef struct Cellule* Pile;
+typedef struct Cellule* LC;
 
 
 
 
 typedef struct Cellule
 {
-    Paquet pqt;
+    processus pr;
      struct Cellule *suivant;
 }
 
-typedef struct FileElment
-{
-Paquet pqt;
- struct FileElment *suivant;
-}
-FileElment;
+typedef struct File pr1;
+
+typedef struct File pr2;
+
+typedef struct File pr3;
+
+
 typedef struct File
 {
 
- struct FileElment *tete;
- struct FileElment *queu;
-}
-File;
-
-typedef struct noeud noeud;
-struct noeud
-{
-    Paquet pqt;
-    noeud *ABG;
-    noeud *ABD;
-
+ struct Cellule *tete;
+ struct Cellule *queu;
 };
 
-typedef noeud* ABR ;
 
 
-
-typedef struct Routeur
-{
-
- Pile port1;
-File port2;
-Liste port3;
-ABR port4;
-}
-Routeur;
-
-
-
-Routeur init_routeur();
-void saisir(Paquet *pqt);
-Routeur empiler(Routeur RT,Paquet pqt);
+void saisirProcessus(processus *p);
+LC ajouterProcessus(LC l,processus p);
 void afficher_paquet(Routeur RT, char * destination);
-Cellule* chercher(Routeur RT , char *adresse);
+Cellule* chercherProcessus(LC L, int pid)
 void defiler(Routeur *RT);
 Routeur enfiler(Routeur RT , Paquet pqt);
 
